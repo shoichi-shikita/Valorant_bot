@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>スキン選択</title>
+  <style>
+    .skin-card { display: flex; align-items: center; margin-bottom: 8px; }
+    .skin-card img { width: 100px; margin-right: 10px; }
+  </style>
+  <script>
+    function filterSkins() {
+      const keyword = document.getElementById("search").value.toLowerCase();
+      const sections = document.querySelectorAll(".weapon-section");
+      sections.forEach(section => {
+        let visible = false;
+        const cards = section.querySelectorAll(".skin-card");
+        cards.forEach(card => {
+          const name = card.dataset.name.toLowerCase();
+          const show = name.includes(keyword);
+          card.style.display = show ? "flex" : "none";
+          if (show) visible = true;
+        });
+        section.style.display = visible ? "block" : "none";
+      });
+    }
+  </script>
+</head>
+<body>
+  <h2>欲しいスキンを検索＆選択してください</h2>
+  <input type="text" id="search" oninput="filterSkins()" placeholder="スキン名を入力..." />
+
+  <form method="POST">
+    {% for weapon, skins in weapons.items() %}
+      <div class="weapon-section">
+        <h3>{{ weapon }}</h3>
+        {% for skin in skins %}
+          <div class="skin-card" data-name="{{ skin.name }}">
+            <input type="checkbox" name="skins" value="{{ skin.name }}">
+            <img src="{{ skin.image }}" alt="{{ skin.name }}">
+            <span>{{ skin.name }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <br>
+    <button type="submit">保存</button>
+  </form>
+</body>
+</html>
